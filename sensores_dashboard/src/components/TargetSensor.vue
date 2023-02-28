@@ -1,0 +1,62 @@
+<template>
+  <div
+    v-if="abrirModalModificarSensor"
+    class="fixed z-0 inset-0 bg-black opacity-50"
+  ></div>
+  <div
+    class="w-64 p-2 bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700"
+    @click="ir()"
+  >
+    <h5
+      class="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white capitalize"
+    >
+      {{ nombre }}
+    </h5>
+    <p class="mb-3 font-normal text-gray-700 dark:text-gray-400">
+      {{ informacion }} grados
+    </p>
+    <button
+      @click.stop="modificarSensor()"
+      class="mt-3 px-3 py-2 text-sm font-medium text-center text-white bg-blue-300 rounded-lg hover:bg-blue-400 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+    >
+      Modificar
+    </button>
+    <button
+      @click.stop="eliminarSensor()"
+      class="ml-3 px-3 py-2 text-sm font-medium text-center text-white bg-red-500 rounded-lg hover:bg-red-600 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+    >
+      Eliminar
+    </button>
+  </div>
+  <ModalModifySensor
+    v-if="abrirModalModificarSensor"
+    :idSensor="id"
+    :listaSalas="listaSalas"
+    @cerrar="abrirModalModificarSensor = false"
+  />
+</template>
+<script setup>
+import { eliminaSensor } from "@/firebase.js";
+import { ref } from "vue";
+import ModalModifySensor from "@/components/ModalModifySensor.vue";
+
+const props = defineProps({
+  nombre: String,
+  informacion: String,
+  id: String,
+  listaSalas: Array,
+});
+
+let abrirModalModificarSensor = ref(false);
+
+const eliminarSensor = () => {
+  alert(`Se ha eliminado el sensor ${props.nombre}`);
+  eliminaSensor("sensores", props.id);
+};
+
+const modificarSensor = () => {
+  abrirModalModificarSensor.value = true;
+};
+
+const ir = () => window.open(`http://localhost:5174/${props.id}`, "_blank");
+</script>
